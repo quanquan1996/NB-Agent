@@ -11,7 +11,7 @@ COPY requirements.txt ./
 
 # 步骤 4: 安装依赖
 # 使用 uv 高效地安装所有必要的 Python 包。
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv pip install --no-cache-dir -r requirements.txt
 
 # 步骤 5: 复制你的应用代码
 # 将你项目中的所有文件（包括你的主应用文件和 NBAgent 模块）复制到容器中。
