@@ -11,10 +11,11 @@ async def agent_invocation(payload):
     user_message = payload.get(
         "prompt", "No prompt found in input, please guide customer to create a json payload with prompt key"
     )
-    stream = nb_agent.stream_async(user_message)
-    async for event in stream:
-        print(event)
-        yield (event)
+    return {"result":nb_agent(user_message).message}
+    # stream = nb_agent.stream_async(user_message)
+    # async for event in stream:
+    #     print(event)
+    #     yield (event)
 
 if __name__ == "__main__":
     app.run()

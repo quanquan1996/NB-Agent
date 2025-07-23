@@ -3,3 +3,7 @@ strands-agents-tools
 boto3
 bedrock-agentcore
 uvicorn[standard]
+pandas
+openpyxl
+psycopg2-binary
+numpy
