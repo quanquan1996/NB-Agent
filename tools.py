@@ -114,6 +114,27 @@ def query_camera_qa(question: str):
     ]
     return qa_doc
 
+# 操作空调，可以传入开关 、温度、风速、模式
+@tool(description="Control the air conditioner,action:on/off,temperature:18~32,wind_speed:low/medium/high,mode:cool/heat/dry/ventilate", name="control_air_conditioner")
+def control_air_conditioner(action: str, temperature: int , wind_speed: str , mode: str):
+    """
+    :param action: The action to perform (on, off)
+    :param temperature: The temperature to set (in degrees Celsius)
+    :param wind_speed: The wind speed to set (low, medium, high)
+    :param mode: The mode to set (cool, heat, dry, ventilate)
+    :return: The result of the action
+    """
+    if action == "on":
+        print("Mock action Turning on the air conditioner...")
+        print(f"Setting temperature to {temperature}°C...")
+        print(f"Setting wind speed to {wind_speed}...")
+        print(f"Setting mode to {mode}...")
+        return "The air conditioner is now on."
+    elif action == "off":
+        print("Mock action Turning off the air conditioner...")
+        return "The air conditioner is now off."
+    else:
+        return "Invalid action.try again"
 
 # 操作窗帘开关
 @tool(description="Control the curtains,action:open/close", name="control_curtains")
@@ -189,7 +210,7 @@ def search_faq(query: str, top_k: int = 5):
     :param top_k: 希望返回的最相关结果的数量，默认为3。
     :return: 一个格式化的字符串，包含找到的FAQ；如果未找到则返回提示信息。
     """
-    print(f"🔍 接收到查询: '{query}', 正在执行RAG检索...")
+    print(f"🔍 接收到查询: '{query}',topk:'{top_k}'正在执行RAG检索...")
 
     # 步骤 A: 向量化查询
     print("   - 步骤1: 正在将查询向量化...")

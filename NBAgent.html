@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StrandsAgent</title>
+    <style>
+        /* --- 全局与字体定义 --- */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1d1d1f;
+            --sidebar-bg: #f5f5f7;
+            --user-msg-bg: #0a84ff;
+            --agent-msg-bg: #e5e5ea;
+            --border-color: #d1d1d6;
+            --placeholder-color: #8a8a8e;
+            --icon-color: #6e6e73;
+            --tool-card-bg: #ffffff;
+            --tool-input-bg: #f0f0f0;
+            --font-family: -apple-system, "SF Pro Display", "Helvetica Neue", "Arial", sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        /* --- 主布局 --- */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 10px 10px 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .new-chat-button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.2s ease;
+        }
+        .new-chat-button:hover { background-color: #e9e9eb; }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 10px 10px 0 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .clear-chat-button {
+            background: none;
+            border: none;
+            color: var(--icon-color);
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 8px;
+        }
+        .clear-chat-button:hover { background-color: #e0e0e0; }
+
+        /* --- 聊天窗口 --- */
+        .chat-window {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-color);
+        }
+
+        #chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .message-wrapper {
+            display: flex;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--agent-msg-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .user-avatar { background-color: var(--user-msg-bg); color: white; }
+
+        .message-content {
+            padding-top: 5px;
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        .message-content p { margin: 0; }
+
+        .agent-response { display: flex; flex-direction: column; gap: 12px; }
+
+        /* --- 工具调用卡片 --- */
+        .tool-call-card {
+            background-color: var(--tool-card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .tool-call-title { font-weight: 600; color: #333; margin-bottom: 8px; }
+        .tool-call-input { font-family: "SF Mono", "Courier New", monospace; font-size: 13px; background-color: var(--tool-input-bg); padding: 10px; border-radius: 8px; white-space: pre-wrap; word-break: break-all; border: 1px solid #e0e0e0; }
+        .tool-call-result { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; }
+        .tool-status { font-weight: 600; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; margin-bottom: 8px; }
+        .tool-status-success { color: #22863a; background-color: #e6ffec; }
+        .tool-status-error { color: #cb2431; background-color: #ffeef0; }
+        .tool-result-content { font-family: "SF Mono", "Courier New", monospace; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+
+        /* --- 输入区域 --- */
+        .input-area {
+            padding: 20px;
+            background-color: var(--bg-color);
+        }
+
+        .input-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        #message-input {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            font-size: 16px;
+            font-family: var(--font-family);
+            box-sizing: border-box;
+            transition: box-shadow 0.2s ease;
+        }
+        #message-input:focus { outline: none; box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.5); }
+
+        #send-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border: none;
+            background-color: var(--user-msg-bg);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        #send-button:disabled { background-color: #a0cfff; cursor: not-allowed; }
+
+        /* --- 响应式设计 --- */
+        @media (max-width: 768px) {
+            .sidebar { width: 0; padding: 20px 0; border: none; }
+            .message-wrapper, .input-wrapper { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <button class="new-chat-button" onclick="window.location.reload()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>新对话</span>
+            </button>
+        </div>
+        <div class="sidebar-footer">
+            <button class="clear-chat-button" id="clear-button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                <span>清空对话</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="chat-window">
+        <div id="chat-container">
+        </div>
+        <div class="input-area">
+            <div class="input-wrapper">
+                <input type="text" id="message-input" placeholder="向 StrandsAgent 发送消息...">
+                <button id="send-button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatContainer = document.getElementById('chat-container');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const clearButton = document.getElementById('clear-button');
+
+    const AGENT_API_ENDPOINT = 'http://127.0.0.1:8080/invocations';
+
+    const appendMessage = (content, type) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'message-wrapper';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+
+        if (type === 'user') {
+            avatar.classList.add('user-avatar');
+            avatar.textContent = 'U';
+            contentDiv.innerHTML = `<p>${content}</p>`;
+        } else {
+            avatar.textContent = 'SA';
+            contentDiv.appendChild(content); // Agent消息的内容是一个复杂的div
+        }
+
+        wrapper.appendChild(avatar);
+        wrapper.appendChild(contentDiv);
+        chatContainer.appendChild(wrapper);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    };
+
+    const sendMessage = async () => {
+        const userMessage = messageInput.value.trim();
+        if (!userMessage) return;
+
+        messageInput.value = '';
+        messageInput.disabled = true;
+        sendButton.disabled = true;
+
+        appendMessage(userMessage, 'user');
+
+        // --- Agent 回复的UI容器 ---
+        const agentTurnContainer = document.createElement('div');
+        agentTurnContainer.className = 'agent-response';
+
+        const toolCallsContainer = document.createElement('div');
+        const agentResponseTextElement = document.createElement('p');
+
+        agentTurnContainer.appendChild(toolCallsContainer);
+        agentTurnContainer.appendChild(agentResponseTextElement);
+
+        appendMessage(agentTurnContainer, 'agent');
+
+        let activeToolCalls = {};
+
+        try {
+            const response = await fetch(AGENT_API_ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: userMessage, stream: true })
+            });
+
+            if (!response.body) throw new Error('ReadableStream not supported.');
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let accumulatedChunks = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                accumulatedChunks += decoder.decode(value, { stream: true });
+                const eventStrings = accumulatedChunks.split('\n\n');
+                accumulatedChunks = eventStrings.pop();
+
+                for (const line of eventStrings) {
+                    if (!line.startsWith('data:')) continue;
+
+                    const dataContent = line.substring(5).trim();
+                    if (!dataContent) continue;
+
+                    try {
+                        const data = JSON.parse(dataContent);
+
+                        if (data.event) {
+                            const eventType = Object.keys(data.event)[0];
+                            const eventData = data.event[eventType];
+
+                            if (eventType === 'contentBlockStart' && eventData.start.toolUse) {
+                                const { toolUseId, name } = eventData.start.toolUse;
+                                const card = document.createElement('div');
+                                card.className = 'tool-call-card';
+                                card.id = `tool-call-${toolUseId}`;
+                                card.innerHTML = `
+                                        <div class="tool-call-title">⚙️ 调用工具: ${name}</div>
+                                        <pre class="tool-call-input"></pre>
+                                        <div class="tool-call-result"></div>
+                                    `;
+                                toolCallsContainer.appendChild(card);
+                                activeToolCalls[toolUseId] = { input: '' };
+                            } else if (eventType === 'contentBlockDelta' && eventData.delta.toolUse) {
+                                const toolCallId = Object.keys(activeToolCalls).find(id => agentTurnContainer.querySelector(`#tool-call-${id}`));
+                                if(toolCallId) {
+                                    activeToolCalls[toolCallId].input += eventData.delta.toolUse.input;
+                                    const inputElement = agentTurnContainer.querySelector(`#tool-call-${toolCallId} .tool-call-input`);
+                                    if (inputElement) inputElement.textContent = activeToolCalls[toolCallId].input;
+                                }
+                            } else if (eventType === 'contentBlockStop') {
+                                Object.keys(activeToolCalls).forEach(toolId => {
+                                    const inputElement = agentTurnContainer.querySelector(`#tool-call-${toolId} .tool-call-input`);
+                                    if(inputElement && activeToolCalls[toolId].input){
+                                        try {
+                                            const parsedInput = JSON.parse(activeToolCalls[toolId].input);
+                                            inputElement.textContent = JSON.stringify(parsedInput, null, 2);
+                                        } catch (e) {}
+                                    }
+                                });
+                            } else if (eventType === 'contentBlockDelta' && eventData.delta.text) {
+                                agentResponseTextElement.textContent += eventData.delta.text.replace(/<\/?(thinking|response)>/g, '');
+                            }
+                        } else if (data.message && data.message.role === 'user' && data.message.content[0]?.toolResult) {
+                            const { toolUseId, status, content } = data.message.content[0].toolResult;
+                            const resultContainer = agentTurnContainer.querySelector(`#tool-call-${toolUseId} .tool-call-result`);
+                            if (resultContainer) {
+                                const statusClass = status === 'success' ? 'tool-status-success' : 'tool-status-error';
+                                const statusIcon = status === 'success' ? '✅' : '❌';
+                                const contentText = JSON.stringify(content, null, 2);
+                                resultContainer.innerHTML = `
+                                        <span class="tool-status ${statusClass}">${statusIcon} ${status}</span>
+                                        <div class="tool-result-content">${contentText}</div>
+                                    `;
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Error parsing event JSON:', e, 'Data was:', dataContent);
+                    }
+                }
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        } catch (error) {
+            console.error('Error fetching from agent:', error);
+            agentResponseTextElement.textContent = `错误: ${error.message}`;
+        } finally {
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+            messageInput.focus();
+        }
+    };
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+    clearButton.addEventListener('click', () => {
+        chatContainer.innerHTML = '';
+    });
+</script>
+</body>
+</html>
