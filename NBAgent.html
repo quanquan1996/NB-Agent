@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StrandsAgent</title>
     <style>
+        /* CSS样式部分保持不变，这里省略以节省空间... */
         /* --- 全局与字体定义 --- */
         :root {
             --bg-color: #ffffff;
@@ -31,131 +32,30 @@
         }
 
         /* --- 主布局 --- */
-        .container {
-            display: flex;
-            height: 100vh;
-        }
-
-        .sidebar {
-            width: 260px;
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
-            padding: 20px 10px;
-            display: flex;
-            flex-direction: column;
-            transition: width 0.3s ease;
-        }
-
-        .sidebar-header {
-            padding: 0 10px 10px 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .new-chat-button {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background-color 0.2s ease;
-        }
+        .container { display: flex; height: 100vh; }
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; transition: width 0.3s ease; }
+        .sidebar-header { padding: 0 10px 10px 10px; border-bottom: 1px solid var(--border-color); }
+        .new-chat-button { width: 100%; padding: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; font-size: 16px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: background-color 0.2s ease; }
         .new-chat-button:hover { background-color: #e9e9eb; }
-
-        .sidebar-footer {
-            margin-top: auto;
-            padding: 10px 10px 0 10px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .clear-chat-button {
-            background: none;
-            border: none;
-            color: var(--icon-color);
-            cursor: pointer;
-            padding: 10px;
-            width: 100%;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-radius: 8px;
-        }
+        .sidebar-footer { margin-top: auto; padding: 10px 10px 0 10px; border-top: 1px solid var(--border-color); }
+        .clear-chat-button { background: none; border: none; color: var(--icon-color); cursor: pointer; padding: 10px; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; border-radius: 8px; }
         .clear-chat-button:hover { background-color: #e0e0e0; }
 
         /* --- 聊天窗口 --- */
-        .chat-window {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-color);
-        }
-
-        #chat-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .message-wrapper {
-            display: flex;
-            gap: 15px;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--agent-msg-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 500;
-            flex-shrink: 0;
-        }
-
+        .chat-window { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-color); }
+        #chat-container { flex-grow: 1; overflow-y: auto; padding: 30px 20px; display: flex; flex-direction: column; gap: 25px; }
+        .message-wrapper { display: flex; gap: 15px; max-width: 800px; margin: 0 auto; width: 100%; opacity: 0; transform: translateY(10px); animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background-color: var(--agent-msg-bg); display: flex; align-items: center; justify-content: center; font-weight: 500; flex-shrink: 0; }
         .user-avatar { background-color: var(--user-msg-bg); color: white; }
-
-        .message-content {
-            padding-top: 5px;
-            line-height: 1.6;
-            width: 100%;
-        }
-
+        .message-content { padding-top: 5px; line-height: 1.6; width: 100%; }
         .message-content p { margin: 0; }
-
+        .message-content img, .message-content video { max-width: 300px; max-height: 300px; border-radius: 12px; margin-top: 8px; }
         .agent-response { display: flex; flex-direction: column; gap: 12px; }
 
         /* --- 工具调用卡片 --- */
-        .tool-call-card {
-            background-color: var(--tool-card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .tool-call-title { font-weight: 600; color: #333; margin-bottom: 8px; }
+        .tool-call-card { background-color: var(--tool-card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .tool-call-title { font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
         .tool-call-input { font-family: "SF Mono", "Courier New", monospace; font-size: 13px; background-color: var(--tool-input-bg); padding: 10px; border-radius: 8px; white-space: pre-wrap; word-break: break-all; border: 1px solid #e0e0e0; }
         .tool-call-result { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; }
         .tool-status { font-weight: 600; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; margin-bottom: 8px; }
@@ -164,52 +64,27 @@
         .tool-result-content { font-family: "SF Mono", "Courier New", monospace; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
 
         /* --- 输入区域 --- */
-        .input-area {
-            padding: 20px;
-            background-color: var(--bg-color);
-        }
-
-        .input-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        #message-input {
-            width: 100%;
-            padding: 14px 50px 14px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            font-size: 16px;
-            font-family: var(--font-family);
-            box-sizing: border-box;
-            transition: box-shadow 0.2s ease;
-        }
+        .input-area { padding: 10px 20px 20px 20px; background-color: var(--bg-color); border-top: 1px solid var(--border-color); }
+        .input-wrapper { max-width: 800px; margin: 0 auto; position: relative; }
+        #message-input { width: 100%; padding: 14px 95px 14px 55px; border: 1px solid var(--border-color); border-radius: 18px; font-size: 16px; font-family: var(--font-family); box-sizing: border-box; transition: box-shadow 0.2s ease; }
         #message-input:focus { outline: none; box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.5); }
 
-        #send-button {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 34px;
-            height: 34px;
-            border: none;
-            background-color: var(--user-msg-bg);
-            color: white;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s ease;
-        }
+        /* --- 媒体上传与预览样式 --- */
+        #upload-button { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border: none; background-color: #e5e5ea; color: var(--icon-color); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease; }
+        #upload-button:hover { background-color: #d1d1d6; }
+        #media-input { display: none; }
+        #media-preview-container { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 auto 10px auto; max-width: 800px; }
+        .media-preview-item { position: relative; }
+        .media-preview-item img, .media-preview-item video { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border-color); }
+        .remove-media-btn { position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
+
+        #send-button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border: none; background-color: var(--user-msg-bg); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease; }
         #send-button:disabled { background-color: #a0cfff; cursor: not-allowed; }
 
         /* --- 响应式设计 --- */
         @media (max-width: 768px) {
             .sidebar { width: 0; padding: 20px 0; border: none; }
-            .message-wrapper, .input-wrapper { max-width: 100%; }
+            .message-wrapper, .input-wrapper, #media-preview-container { max-width: 100%; }
         }
     </style>
 </head>
@@ -235,7 +110,12 @@
         <div id="chat-container">
         </div>
         <div class="input-area">
+            <div id="media-preview-container"></div>
             <div class="input-wrapper">
+                <input type="file" id="media-input" multiple accept="image/*,video/*">
+                <label for="media-input" id="upload-button" title="上传图片或视频">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                </label>
                 <input type="text" id="message-input" placeholder="向 StrandsAgent 发送消息...">
                 <button id="send-button">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -250,26 +130,81 @@
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
     const clearButton = document.getElementById('clear-button');
+    const mediaInput = document.getElementById('media-input');
+    const mediaPreviewContainer = document.getElementById('media-preview-container');
 
     const AGENT_API_ENDPOINT = 'http://127.0.0.1:8080/invocations';
 
-    const appendMessage = (content, type) => {
+    let uploadedFiles = [];
+
+    // --- 文件处理与预览功能 (保持不变) ---
+    const fileToBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve({
+            bytes: reader.result.split(',')[1],
+            type: file.type.split('/')[0] || 'file',
+            format: file.type.split('/')[1] || 'octet-stream'
+        });
+        reader.onerror = error => reject(error);
+    });
+
+    const renderPreviews = () => {
+        mediaPreviewContainer.innerHTML = '';
+        uploadedFiles.forEach((file, index) => {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'media-preview-item';
+            const objectURL = URL.createObjectURL(file);
+            let mediaElement;
+            if (file.type.startsWith('image/')) {
+                mediaElement = document.createElement('img');
+            } else {
+                mediaElement = document.createElement('video');
+                mediaElement.muted = true;
+            }
+            mediaElement.src = objectURL;
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-media-btn';
+            removeBtn.innerHTML = '&times;';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                uploadedFiles.splice(index, 1);
+                renderPreviews();
+            };
+            previewItem.appendChild(mediaElement);
+            previewItem.appendChild(removeBtn);
+            mediaPreviewContainer.appendChild(previewItem);
+        });
+    };
+
+    mediaInput.addEventListener('change', (event) => {
+        uploadedFiles.push(...Array.from(event.target.files));
+        renderPreviews();
+        event.target.value = '';
+    });
+
+    const appendMessage = (content, type, mediaFiles = []) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'message-wrapper';
-
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
-
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
 
         if (type === 'user') {
             avatar.classList.add('user-avatar');
             avatar.textContent = 'U';
-            contentDiv.innerHTML = `<p>${content}</p>`;
+            if (content) contentDiv.innerHTML = `<p>${content}</p>`;
+            mediaFiles.forEach(file => {
+                const objectURL = URL.createObjectURL(file);
+                let mediaElement = file.type.startsWith('image/') ? document.createElement('img') : document.createElement('video');
+                if(mediaElement.tagName === 'VIDEO') mediaElement.controls = true;
+                mediaElement.src = objectURL;
+                contentDiv.appendChild(mediaElement);
+            });
         } else {
             avatar.textContent = 'SA';
-            contentDiv.appendChild(content); // Agent消息的内容是一个复杂的div
+            contentDiv.appendChild(content);
         }
 
         wrapper.appendChild(avatar);
@@ -280,41 +215,54 @@
 
     const sendMessage = async () => {
         const userMessage = messageInput.value.trim();
-        if (!userMessage) return;
+        if (!userMessage && uploadedFiles.length === 0) return;
 
+        const filesToSend = [...uploadedFiles];
         messageInput.value = '';
+        uploadedFiles = [];
+        renderPreviews();
         messageInput.disabled = true;
         sendButton.disabled = true;
 
-        appendMessage(userMessage, 'user');
+        appendMessage(userMessage, 'user', filesToSend);
 
-        // --- Agent 回复的UI容器 ---
+        // --- ✅ Agent UI容器设置 (重要) ---
+        // 每次发送消息时，创建一个全新的回复容器
         const agentTurnContainer = document.createElement('div');
         agentTurnContainer.className = 'agent-response';
-
+        // 创建一个专门放工具卡片的容器
         const toolCallsContainer = document.createElement('div');
+        // 创建一个放最终文本回复的元素
         const agentResponseTextElement = document.createElement('p');
-
-        agentTurnContainer.appendChild(toolCallsContainer);
-        agentTurnContainer.appendChild(agentResponseTextElement);
-
+        agentTurnContainer.appendChild(toolCallsContainer); // 先加工具容器
+        agentTurnContainer.appendChild(agentResponseTextElement); // 再加文本容器
+        // 把整个agent的回复区添加到聊天窗口
         appendMessage(agentTurnContainer, 'agent');
 
-        let activeToolCalls = {};
+        let activeToolCalls = {}; // 用于跟踪当前活跃的工具调用
 
         try {
+            const content = [];
+            if(userMessage) content.push({ text: userMessage });
+
+            const base64Results = await Promise.all(filesToSend.map(file => fileToBase64(file)));
+            base64Results.forEach(result => {
+                content.push({ [result.type]: { format: result.format, source: { bytes: result.bytes } } });
+            });
+
             const response = await fetch(AGENT_API_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: userMessage, stream: true })
+                body: JSON.stringify({ content: content })
             });
 
-            if (!response.body) throw new Error('ReadableStream not supported.');
+            if (!response.body) throw new Error('ReadableStream not available.');
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder('utf-8');
             let accumulatedChunks = '';
 
+            // --- ✅ 关键修改：恢复完整的流事件处理逻辑 ---
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
@@ -327,65 +275,65 @@
                     if (!line.startsWith('data:')) continue;
 
                     const dataContent = line.substring(5).trim();
-                    if (!dataContent) continue;
+                    if (dataContent.startsWith('{') && dataContent.endsWith('}')) {
+                        try {
+                            const data = JSON.parse(dataContent);
 
-                    try {
-                        const data = JSON.parse(dataContent);
+                            // --- 核心逻辑：判断事件类型并更新UI ---
 
-                        if (data.event) {
-                            const eventType = Object.keys(data.event)[0];
-                            const eventData = data.event[eventType];
+                            if (data.event) { // 处理流式事件
+                                const eventType = Object.keys(data.event)[0];
+                                const eventData = data.event[eventType];
 
-                            if (eventType === 'contentBlockStart' && eventData.start.toolUse) {
-                                const { toolUseId, name } = eventData.start.toolUse;
-                                const card = document.createElement('div');
-                                card.className = 'tool-call-card';
-                                card.id = `tool-call-${toolUseId}`;
-                                card.innerHTML = `
+                                // 1. 工具调用开始：创建卡片
+                                if (eventType === 'contentBlockStart' && eventData.start?.toolUse) {
+                                    const { toolUseId, name } = eventData.start.toolUse;
+                                    const card = document.createElement('div');
+                                    card.className = 'tool-call-card';
+                                    card.id = `tool-call-${toolUseId}`;
+                                    card.innerHTML = `
                                         <div class="tool-call-title">⚙️ 调用工具: ${name}</div>
                                         <pre class="tool-call-input"></pre>
                                         <div class="tool-call-result"></div>
                                     `;
-                                toolCallsContainer.appendChild(card);
-                                activeToolCalls[toolUseId] = { input: '' };
-                            } else if (eventType === 'contentBlockDelta' && eventData.delta.toolUse) {
-                                const toolCallId = Object.keys(activeToolCalls).find(id => agentTurnContainer.querySelector(`#tool-call-${id}`));
-                                if(toolCallId) {
-                                    activeToolCalls[toolCallId].input += eventData.delta.toolUse.input;
-                                    const inputElement = agentTurnContainer.querySelector(`#tool-call-${toolCallId} .tool-call-input`);
-                                    if (inputElement) inputElement.textContent = activeToolCalls[toolCallId].input;
+                                    toolCallsContainer.appendChild(card);
+                                    activeToolCalls[toolUseId] = { input: '' };
                                 }
-                            } else if (eventType === 'contentBlockStop') {
-                                Object.keys(activeToolCalls).forEach(toolId => {
-                                    const inputElement = agentTurnContainer.querySelector(`#tool-call-${toolId} .tool-call-input`);
-                                    if(inputElement && activeToolCalls[toolId].input){
-                                        try {
-                                            const parsedInput = JSON.parse(activeToolCalls[toolId].input);
-                                            inputElement.textContent = JSON.stringify(parsedInput, null, 2);
-                                        } catch (e) {}
+                                // 2. 工具输入流：更新卡片内的输入内容
+                                else if (eventType === 'contentBlockDelta' && eventData.delta?.toolUse) {
+                                    const toolUseId = Object.keys(activeToolCalls).pop(); // 假设只有一个活跃工具
+                                    if(toolUseId && activeToolCalls[toolUseId]) {
+                                        activeToolCalls[toolUseId].input += eventData.delta.toolUse.input;
+                                        const inputElement = document.querySelector(`#tool-call-${toolUseId} .tool-call-input`);
+                                        if (inputElement) inputElement.textContent = activeToolCalls[toolUseId].input;
                                     }
-                                });
-                            } else if (eventType === 'contentBlockDelta' && eventData.delta.text) {
-                                agentResponseTextElement.textContent += eventData.delta.text.replace(/<\/?(thinking|response)>/g, '');
-                            }
-                        } else if (data.message && data.message.role === 'user' && data.message.content[0]?.toolResult) {
-                            const { toolUseId, status, content } = data.message.content[0].toolResult;
-                            const resultContainer = agentTurnContainer.querySelector(`#tool-call-${toolUseId} .tool-call-result`);
-                            if (resultContainer) {
-                                const statusClass = status === 'success' ? 'tool-status-success' : 'tool-status-error';
-                                const statusIcon = status === 'success' ? '✅' : '❌';
-                                const contentText = JSON.stringify(content, null, 2);
-                                resultContainer.innerHTML = `
+                                }
+                                // 3. 文本回复流：更新最终回复的文本
+                                else if (eventType === 'contentBlockDelta' && eventData.delta?.text) {
+                                    agentResponseTextElement.textContent += eventData.delta.text;
+                                }
+
+                            } else if (data.message?.content?.[0]?.toolResult) { // 处理工具结果事件
+                                const { toolUseId, status, content } = data.message.content[0].toolResult;
+                                const resultContainer = document.querySelector(`#tool-call-${toolUseId} .tool-call-result`);
+                                if (resultContainer) {
+                                    const statusClass = status === 'success' ? 'tool-status-success' : 'tool-status-error';
+                                    const statusIcon = status === 'success' ? '✅' : '❌';
+                                    // 将结果格式化为JSON字符串显示
+                                    const contentText = JSON.stringify(JSON.parse(content[0].text), null, 2);
+                                    resultContainer.innerHTML = `
                                         <span class="tool-status ${statusClass}">${statusIcon} ${status}</span>
                                         <div class="tool-result-content">${contentText}</div>
                                     `;
+                                }
                             }
+
+                        } catch (e) {
+                            console.error('Error parsing a JSON event:', e, 'Data was:', dataContent);
                         }
-                    } catch (e) {
-                        console.error('Error parsing event JSON:', e, 'Data was:', dataContent);
                     }
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
                 }
-                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
         } catch (error) {
             console.error('Error fetching from agent:', error);
@@ -397,6 +345,7 @@
         }
     };
 
+    // 事件监听器 (保持不变)
     sendButton.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -406,6 +355,8 @@
     });
     clearButton.addEventListener('click', () => {
         chatContainer.innerHTML = '';
+        uploadedFiles = [];
+        renderPreviews();
     });
 </script>
 </body>

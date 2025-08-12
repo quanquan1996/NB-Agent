@@ -12,8 +12,8 @@ system_prompt = """
 你是一个智能助手，帮助操控智能家居以及对应场景和解决一些产品使用的故障，回答尽量详细
 """
 bedrock_model = BedrockModel(
-    #model_id="us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-    model_id="us.amazon.nova-lite-v1:0"
+    model_id="us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+    #model_id="us.amazon.nova-lite-v1:0"
 )
 nb_agent = Agent(model=bedrock_model,tools=[get_current_userinfo,control_curtains,search_faq,control_air_conditioner])
 # nb_agent("你哈我是张三")
