@@ -9,13 +9,13 @@ from tools import *
 # Create an agent with tools from the strands-tools example tools package
 # as well as our custom letter_counter tool
 system_prompt = """
-你是一个智能助手，帮助操控智能家居以及对应场景和解决一些产品使用的故障，回答尽量详细
+你是一个智能助手，帮助解决健康生活相关场景
 """
 bedrock_model = BedrockModel(
     model_id="us.anthropic.claude-3-7-sonnet-20250219-v1:0"
     #model_id="us.amazon.nova-lite-v1:0"
 )
-nb_agent = Agent(model=bedrock_model,tools=[get_current_userinfo,control_curtains,search_faq,control_air_conditioner])
+nb_agent = Agent(model=bedrock_model,tools=[get_current_userinfo,get_current_user_history_info,record_meal_calories_from_image])
 # nb_agent("你哈我是张三")
 # nb_agent("我是谁")
 #nb_agent("你好，能不能帮我打开窗帘")

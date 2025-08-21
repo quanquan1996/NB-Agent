@@ -34,31 +34,232 @@ def get_titan_embedding(text, bedrock_client):
     except Exception as e:
         print(f"调用 Bedrock 出错: {e}")
         return None
+
+@tool(description="Get the current user body history information with weight and fat percentage", name="get_current_userinfo")
+def get_current_user_history_info():
+    user_health_info = {
+        "weight_history": [
+            {
+                "date": "2025-07-01",
+                "weight_kg": 78.0
+            },
+            {
+                "date": "2025-07-15",
+                "weight_kg": 77.1
+            },
+            {
+                "date": "2025-08-01",
+                "weight_kg": 76.2
+            },
+            {
+                "date": "2025-08-10",
+                "weight_kg": 75.5
+            },
+            {
+                "date": "2025-08-16",
+                "weight_kg": 75.7
+            },
+            {
+                "date": "2025-08-20",
+                "weight_kg": 75.8
+            },
+            {
+                "date": "2025-08-24",
+                "weight_kg": 75.9
+            },
+            {
+                "date": "2025-08-31",
+                "weight_kg": 76.0
+            },
+            {
+                "date": "2025-09-05",
+                "weight_kg": 75.6
+            },
+            {
+                "date": "2025-09-10",
+                "weight_kg": 75.6
+            },
+            {
+                "date": "2025-09-15",
+                "weight_kg": 75.0
+            },
+            {
+                "date": "2025-09-22",
+                "weight_kg": 74.8
+            },
+            {
+                "date": "2025-09-28",
+                "weight_kg": 74.9
+            },
+            {
+                "date": "2025-10-01",
+                "weight_kg": 74.9
+            },
+            {
+                "date": "2025-10-06",
+                "weight_kg": 74.4
+            },
+            {
+                "date": "2025-10-13",
+                "weight_kg": 74.2
+            },
+            {
+                "date": "2025-10-17",
+                "weight_kg": 74.2
+            },
+            {
+                "date": "2025-10-23",
+                "weight_kg": 74.3
+            },
+            {
+                "date": "2025-10-28",
+                "weight_kg": 74.4
+            },
+            {
+                "date": "2025-11-04",
+                "weight_kg": 74.3
+            }
+        ],
+        "body_fat_history": [
+            {
+                "date": "2025-07-01",
+                "percentage": 20.1
+            },
+            {
+                "date": "2025-07-15",
+                "percentage": 19.5
+            },
+            {
+                "date": "2025-08-01",
+                "percentage": 18.8
+            },
+            {
+                "date": "2025-08-10",
+                "percentage": 18.2
+            },
+            {
+                "date": "2025-08-16",
+                "percentage": 18.1
+            },
+            {
+                "date": "2025-08-20",
+                "percentage": 18.0
+            },
+            {
+                "date": "2025-08-24",
+                "percentage": 17.9
+            },
+            {
+                "date": "2025-08-31",
+                "percentage": 17.6
+            },
+            {
+                "date": "2025-09-05",
+                "percentage": 17.6
+            },
+            {
+                "date": "2025-09-10",
+                "percentage": 17.4
+            },
+            {
+                "date": "2025-09-15",
+                "percentage": 17.5
+            },
+            {
+                "date": "2025-09-22",
+                "percentage": 17.4
+            },
+            {
+                "date": "2025-09-28",
+                "percentage": 17.5
+            },
+            {
+                "date": "2025-10-01",
+                "percentage": 17.4
+            },
+            {
+                "date": "2025-10-06",
+                "percentage": 17.3
+            },
+            {
+                "date": "2025-10-13",
+                "percentage": 17.1
+            },
+            {
+                "date": "2025-10-17",
+                "percentage": 17.1
+            },
+            {
+                "date": "2025-10-23",
+                "percentage": 17.0
+            },
+            {
+                "date": "2025-10-28",
+                "percentage": 16.7
+            },
+            {
+                "date": "2025-11-04",
+                "percentage": 16.5
+            }
+        ]
+    }
+
+    # 你可以这样访问其中的信息
+    # print(f"当前体重: {user_health_info['current_weight_kg']} kg")
+    # print(f"喜欢的食物: {', '.join(user_health_info['food_likes'])}")
+    return user_health_info
+
 # 获取当前用户信息
-@tool(description="Get the current user information", name="get_current_userinfo")
+@tool(description="Get the current user body information", name="get_current_userinfo")
 def get_current_userinfo():
     """
 
     """
-    user_info = {
-        "name": "John Doe",
-        "age": 30,
-        "address": "123 Main St",
-        "phone": "555-555-5555",
-        "email": "johndoe@example.com",
-        "birthday": "01/01/1990",
-        "gender": "Male",
-        "buyer_since": "01/01/2010",
-        "favorite_color": "Blue",
-        "favorite_food": "Pizza",
-        "favorite_drink": "Coffee",
-        "favorite_movie": "The Matrix",
-        "favorite_book": "The Hobbit",
-        "favorite_quote": "The only way to do great work is to love what you do.",
-        "favorite_animal": "Dog",
-        "favorite_sport": "Soccer",
+    user_health_info = {
+        # 基本身体数据 (Basic Body Data)
+        "height_cm": 175,  # 身高 (厘米)
+        "current_weight_kg": 75.5,  # 当前体重 (公斤)
+        "target_weight_kg": 70.0,  # 目标体重 (公斤)
+        "current_body_fat_percentage": 18.2,  # 当前体脂率 (%)
+        "target_body_fat_percentage": 15.0,  # 目标体脂率 (%)
+
+        # 历史数据记录 (Historical Data Records)
+        "weight_history": [
+            {"date": "2025-07-01", "weight_kg": 78.0},
+            {"date": "2025-07-15", "weight_kg": 77.1},
+            {"date": "2025-08-01", "weight_kg": 76.2},
+            {"date": "2025-08-10", "weight_kg": 75.5},
+        ],
+        "body_fat_history": [
+            {"date": "2025-07-01", "percentage": 20.1},
+            {"date": "2025-07-15", "percentage": 19.5},
+            {"date": "2025-08-01", "percentage": 18.8},
+            {"date": "2025-08-10", "percentage": 18.2},
+        ],
+
+        # 饮食偏好与限制 (Dietary Preferences and Restrictions)
+        "dietary_plan": "低碳水化合物饮食",  # 遵循的饮食计划 (e.g., "均衡饮食", "生酮饮食")
+        "daily_calorie_goal": 2000,  # 每日卡路里目标 (千卡)
+        "macronutrient_targets": { # 宏量营养素目标
+            "protein_g": 150,  # 蛋白质 (克)
+            "carbs_g": 100,    # 碳水化合物 (克)
+            "fat_g": 88        # 脂肪 (克)
+        },
+        "food_likes": ["鸡胸肉", "西兰花", "三文鱼", "牛油果", "鸡蛋"], # 喜欢的食物
+        "food_dislikes": ["肥肉", "芹菜", "甜腻的糕点"], # 不喜欢的食物
+        "allergies_or_intolerances": ["乳糖不耐受"], # 过敏或不耐受
+        "meal_preferences": { # 餐食偏好
+            "meals_per_day": 3, # 每日餐数
+            "preferred_meal_time": ["08:00", "12:30", "18:30"], # 偏好用餐时间
+            "snack_preference": True, # 是否吃零食
+            "preferred_snacks": ["坚果", "酸奶"] # 偏好的零食
+        }
     }
-    return user_info
+
+    # 你可以这样访问其中的信息
+    # print(f"当前体重: {user_health_info['current_weight_kg']} kg")
+    # print(f"喜欢的食物: {', '.join(user_health_info['food_likes'])}")
+    return user_health_info
 
 
 # 获取用户历史对话信息
@@ -151,6 +352,58 @@ def control_curtains(action: str):
         return "The curtains are now closed."
     else:
         return "Invalid action.try again"
+
+@tool(
+    description="从图片记录食物的热量，需要根据图片来预估食物的重量、种类，和食物的蛋白质、脂肪、碳水化合物的百分比含量。",
+    name="record_meal_calories_from_image"
+)
+def record_meal_calories_from_image(
+        food_description: str,
+        estimated_weight_g: float,
+        protein_percentage: float,
+        carbohydrate_percentage: float,
+        fat_percentage: float
+) -> str:
+    """
+    根据AI从图片识别出的食物描述、预估总重量和宏量营养素百分比，计算并记录热量。
+
+    :param food_description: AI对食物的文字描述 (例如："一份鸡胸肉沙拉")。
+    :param estimated_weight_g: 食物总重量的预估值（克）。
+    :param protein_percentage: 蛋白质占总重量的百分比 (例如: 15.5 表示 15.5%)。
+    :param carbohydrate_percentage: 碳水化合物占总重量的百分比。
+    :param fat_percentage: 脂肪占总重量的百分比。
+    :return: 包含记录详情的总结字符串。
+    """
+    # --- 1. 输入验证 ---
+    total_percentage = protein_percentage + carbohydrate_percentage + fat_percentage
+    # --- 2. 计算每种营养素的克数 ---
+    protein_grams = estimated_weight_g * (protein_percentage / 100)
+    carbohydrate_grams = estimated_weight_g * (carbohydrate_percentage / 100)
+    fat_grams = estimated_weight_g * (fat_percentage / 100)
+
+    # --- 3. 计算总热量 ---
+    # 1克蛋白质 ≈ 4千卡, 1克碳水 ≈ 4千卡, 1克脂肪 ≈ 9千卡
+    total_calories = (protein_grams * 4) + (carbohydrate_grams * 4) + (fat_grams * 9)
+
+    # --- 4. 模拟后台记录操作 ---
+    print("--- 模拟后台记录操作 (Mock Action: Recording Meal from Image) ---")
+    print(f"食物描述 (Food Description): {food_description}")
+    print(f"食物总重量 (Total Weight): {estimated_weight_g:.1f}g")
+    print(f"计算出的蛋白质克数 (Calculated Protein): {protein_grams:.1f}g")
+    print(f"计算出的碳水克数 (Calculated Carbs): {carbohydrate_grams:.1f}g")
+    print(f"计算出的脂肪克数 (Calculated Fat): {fat_grams:.1f}g")
+    print(f"计算出的总热量 (Calculated Total Calories): {total_calories:.1f} kcal")
+    print("--------------------------------------------------")
+
+    # --- 5. 生成并返回总结报告 ---
+    summary_report = (
+        f"已记录 '{food_description}'：\n"
+        f"总重约 {estimated_weight_g:.0f}g，"
+        f"热量约 {total_calories:.0f}大卡。\n"
+        f"营养成分：蛋白质 {protein_grams:.1f}g, 碳水 {carbohydrate_grams:.1f}g, 脂肪 {fat_grams:.1f}g。"
+    )
+
+    return summary_report
 
 # 在知识库搜索
 @tool(description="Search the knowledge base ", name="search_bedrock_knowledge_base")
